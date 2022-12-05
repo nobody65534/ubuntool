@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Prompt user for password length
+echo -n "Enter password length: "
+read password_length
+
+# Prompt user for minimum number of special characters
+echo -n "Enter minimum number of special characters: "
+read min_special_chars
+
+# Prompt user for minimum number of numerical characters
+echo -n "Enter minimum number of numerical characters: "
+read min_numerical_chars
+
+# Set password requirements in /etc/security/pwquality.conf
+sed -i "s/minlen = [0-9]*/minlen = $password_length/" /etc/security/pwquality.conf
+sed -i "s/minclass = [0-9]*/minclass = $min_special_chars/" /etc/security/pwquality.conf
+sed -i "s/minclass = [0-9]*/minclass = $min_numerical_chars/" /etc/security/pwquality.conf
+
+# Print updated password requirements
+echo "Updated password requirements:"
+grep "minlen\|minclass" /etc/security/pwquality.conf
