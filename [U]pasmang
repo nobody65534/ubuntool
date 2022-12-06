@@ -12,11 +12,20 @@ read min_special_chars
 echo -n "Enter minimum number of numerical characters: "
 read min_numerical_chars
 
+# Prompt user for minimum number of uppercase characters
+echo -n "Enter minimum number of uppercase characters: "
+read min_uppercase_chars
+
+# Prompt user for minimum number of lowercase characters
+echo -n "Enter minimum number of lowercase characters: "
+read min_lowercase_chars
+
 # Set password requirements in /etc/security/pwquality.conf
 sed -i "s/minlen = [0-9]*/minlen = $password_length/" /etc/security/pwquality.conf
 sed -i "s/minclass = [0-9]*/minclass = $min_special_chars/" /etc/security/pwquality.conf
 sed -i "s/minclass = [0-9]*/minclass = $min_numerical_chars/" /etc/security/pwquality.conf
+sed -i "s/minclass = [0-9]*/minclass = $min_uppercase_chars/" /etc/security/pwquality.conf
+sed -i "s/minclass = [0-9]*/minclass = $min_lowercase_chars/" /etc/security/pwquality.conf
 
 # Print updated password requirements
-echo "Updated password requirements:"
-grep "minlen\|minclass" /etc/security/pwquality.conf
+echo "Updated password requirements."
