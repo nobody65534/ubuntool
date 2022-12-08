@@ -50,7 +50,7 @@ for user in "${users_to_modify[@]}"; do
     gpasswd -d "$user" admin
   fi
   
-  # Check if the current user is in the list of standard users
+  # Check if the user is in the list of standard users
   if [[ " ${standard_users[@]} " =~ " ${user} " ]]; then
     # Remove the user from the sudo and admin groups
     gpasswd -d "$user" sudo
