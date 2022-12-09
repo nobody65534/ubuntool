@@ -26,7 +26,7 @@ for user in $all_users; do
   # Get the UID of the current user
   uid=$(id -u "$user")
 
-  # Check if the UID is between 0 and 999
+  # Check if the UID is between 0 and 999(to skip things like root or daemons)
   if [ $uid -ge 0 ] && [ $uid -le 999 ]; then
     # Skip this user
     continue
