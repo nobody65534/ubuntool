@@ -1,7 +1,18 @@
 #!/bin/bash
-#This program is heavily inspired by this script:
-#https://github.com/ponkio/CyberPatriot/blob/master/Linux_Ubuntu.sh
-#Some parts of the program are taken from it
+makeusers(){
+	echo "Enter the name of the user you would like to add."
+	read -p "> " newuser
+	useradd $newuser
+	echo "Is this user an admin or standard user?"
+	read -p "> " as
+	case $as in
+		admin) usermod -aG sudo $newuser;;
+	esac
+echo "$newuser added as $as"
+echo "$newuser added as $as" >> ubuntoollog
+
+pause
+}
 clearlogs(){
 	clear
 	echo "Are you sure you want to do this? [yN]"
@@ -41,6 +52,7 @@ echo "	██║██║░╚███║██████╔╝░░░█�
 echo "	╚═╝╚═╝░░╚══╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝░╚═════╝░░╚════╝░░░░╚═╝░░░╚═╝░╚════╝░╚═╝░░╚══╝╚═════╝░"
 echo ""
 echo ""
+echo "Select an option to run it."
 echo "Try not to run an option multiple times. If you need to see the output of previous commands, check the ubuntoollog file, or run the \"View Logs\" option."
 pause
 }
@@ -242,6 +254,9 @@ echo "████████████████████████�
 				echo "3: Update and configure update settings	4: Exit				"
 				echo "5: Check the sudoers file		6: Instructions				"
 				echo "7: View Logs				8: Clear logs			"
+				echo "9: Add Users				10:				"
+				echo ""
+				echo ""
 }
 
 
@@ -259,6 +274,7 @@ read_options(){
 			6) instructions;;
 			7) viewlogs;;
 			8) clearlogs;;
+			9) makeusers;;
         	esac
 
 }
@@ -271,3 +287,4 @@ do
 	menu
 	read_options
 done
+
