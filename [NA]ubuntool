@@ -83,7 +83,7 @@ read -p "Are you sure you want to continue? (y/n) " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   # The user did not confirm, so exit the script
-  exit 1
+  return
 fi
 
 # Loop through the list of users to modify
@@ -139,7 +139,7 @@ read -p "Are you sure you want to continue? (y/n) " -n 1 -r
 echo
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
   # The user did not confirm, so exit the script
-  exit 1
+  return
 fi
 
 # Loop through the list of users to delete
