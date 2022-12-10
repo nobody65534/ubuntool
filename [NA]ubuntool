@@ -2,7 +2,7 @@
 #This is ubuntool, it is a script that will be able to run my other scripts,
 #it is not going to be perfect in terms of commenting, but if my other scripts have comments in them i will not remove them.
 
-exit(){
+exitscript(){
 	clear
 	exit 0
 }
@@ -187,7 +187,7 @@ read_options(){
                 	1) test;;
 			2) usrConfig;;
 			3) update;;
-			4) exit;;
+			4) exitscript;;
         	esac
 
 }
