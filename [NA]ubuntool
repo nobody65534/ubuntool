@@ -1,4 +1,55 @@
 #!/bin/bash
+critservices(){
+	clear
+	echo "These are your current system services:"
+	systemctl --type=service --state=active
+	while true; do
+	echo "Enter name of service to add, or type n to quit"
+	read -p "> " servicename
+		if [$servicename =~ n]; then
+			pause
+			return
+		else
+		        apt install "$servicename"
+	        systemctl enable "$servicename"
+		fi
+	done
+pause
+}
+hiddenusers(){
+	all_users=$(cat /etc/passwd | cut -d ":" -f 1)
+	for user in $all_users
+	do
+	   uid=$(id -u "$user")
+	if [ $uid -ge 0 ] && [ $uid -le 999 ]; then
+	 echo "- $user"
+	fi
+	done
+pause
+}
+delmedia(){
+	mp3finds=()
+	mp4finds=()
+mp3finds=$(locate "*.mp3*")
+mp4finds=$(locate "*.mp4*")
+echo "These prohibited files are on your system:"
+echo "$mp3finds"
+echo "$mp4finds"
+pause
+for mp3find in $mp3finds
+do
+	clear
+	echo "Do you want to remove this one?"
+	echo "$mp3find"
+	read -p "> " yn
+	case $yn in
+		y) rm "$mp3find";;
+		n) 
+	esac
+done
+pause
+}
+echo "******* Session Start *******" >> ubuntoollog
 makeusers(){
 	echo "Enter the name of the user you would like to add."
 	read -p "> " newuser
@@ -82,6 +133,7 @@ pause(){
 	read -p "Press [Enter] to continue..."
 }
 update(){
+clear
 		echo "Updating..."
 		sudo add-apt-repository -y ppa:libreoffice/ppa
 		wait
@@ -95,7 +147,7 @@ update(){
 		wait
 		sudo apt-get --purge --reinstall install firefox -y
 		wait
-		sudo apt-get install clamtk -y	
+		sudo apt-get install clamtk -y
 		wait
 
 		##Set daily updates
@@ -254,9 +306,16 @@ echo "████████████████████████�
 				echo "3: Update and configure update settings	4: Exit				"
 				echo "5: Check the sudoers file		6: Instructions				"
 				echo "7: View Logs				8: Clear logs			"
-				echo "9: Add Users				10:				"
+				echo "9: Add Users				10: Delete bad files		"
+				echo "11: List all hidden users			12: Download crit. services	"
 				echo ""
-				echo ""
+if [ "$UserName" != "root" ]
+then
+echo "It is required that you run this script as root."
+echo "$UserName attempted to run script as non-root user" >> ubuntoollog
+pause
+exitscript
+fi
 }
 
 
@@ -275,12 +334,17 @@ read_options(){
 			7) viewlogs;;
 			8) clearlogs;;
 			9) makeusers;;
+			10) delmedia;;
+			11) hiddenusers;;
+			12) critservices;;
         	esac
 
 }
 
 
-
+echo "Updating script databases..."
+	apt install plocate -y
+	updatedb
 while true
 do
 	clear
