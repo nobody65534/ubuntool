@@ -1,0 +1,326 @@
+#!/bin/bash
+R='\033[0;31m'
+G='\033[0;32m'
+Y='\033[1;32m'
+B='\033[0;34m'
+# This script is primarily made by Corbin Parrish.
+# Credit goes to Corbin Parrish,
+# Unless otherwise stated.
+updatescript(){
+	apt install plocate -y
+	updatedb
+}
+reinstall(){
+	echo "Enter name of what you wish to reinstall"
+	read -p "> " reinst
+	echo "Reinstalling $reinst"
+		apt purge $reinst -y
+		apt install $reinst -y
+pause
+}
+currentdirectory=$(pwd)
+critservices(){
+	clear
+	echo "These are your current system services:"
+	systemctl --type=service --state=active
+	while true; do
+	echo "Enter name of service to add, or type n to quit"
+	read -p "> " servicename
+		if [ $servicename == "n" ]; then
+			pause
+			return
+		else
+		        apt install "$servicename" -y
+	        	systemctl enable "$servicename"
+		fi
+	done
+pause
+}
+hiddenusers(){
+	all_users=$(cat /etc/passwd | cut -d ":" -f 1)
+	for user in $all_users
+	do
+	   uid=$(id -u "$user")
+	if [ $uid -ge 0 ] && [ $uid -le 999 ]; then
+	 echo "- $user"
+	fi
+	done
+pause
+}
+delmedia(){
+	mp3finds=()
+	mp4finds=()
+mp3finds=$(locate "*.mp3*")
+mp4finds=$(locate "*.mp4*")
+echo "These prohibited files are on your system:"
+echo "$mp3finds"
+echo "$mp4finds"
+pause
+for mp3find in $mp3finds
+do
+	clear
+	echo "Do you want to remove this one?"
+	echo "$mp3find"
+	read -p "> " yn
+	case $yn in
+		y) rm "$mp3find";;
+		n) 
+	esac
+done
+pause
+}
+makeusers(){
+	echo "Enter the name of the user you would like to add."
+	read -p "> " newuser
+	useradd $newuser
+	echo "Is this user an admin or standard user?"
+	read -p "> " as
+	case $as in
+		admin) usermod -aG sudo $newuser;;
+	esac
+echo "$newuser added as $as"
+echo "$newuser added as $as" >> ubuntoollog
+
+pause
+}
+viewlogs(){
+clear
+logs=$(cat ubuntoollog)
+echo "─────────────────────────────────────────────────────────────"
+echo "─██████─────────██████████████─██████████████─██████████████─"
+echo "─██░░██─────────██░░░░░░░░░░██─██░░░░░░░░░░██─██░░░░░░░░░░██─"
+echo "─██░░██─────────██░░██████░░██─██░░██████████─██░░██████████─"
+echo "─██░░██─────────██░░██──██░░██─██░░██─────────██░░██─────────"
+echo "─██░░██─────────██░░██──██░░██─██░░██─────────██░░██████████─"
+echo "─██░░██─────────██░░██──██░░██─██░░██──██████─██░░░░░░░░░░██─"
+echo "─██░░██─────────██░░██──██░░██─██░░██──██░░██─██████████░░██─"
+echo "─██░░██─────────██░░██──██░░██─██░░██──██░░██─────────██░░██─"
+echo "─██░░██████████─██░░██████░░██─██░░██████░░██─██████████░░██─"
+echo "─██░░░░░░░░░░██─██░░░░░░░░░░██─██░░░░░░░░░░██─██░░░░░░░░░░██─"
+echo "─██████████████─██████████████─██████████████─██████████████─"
+echo "─────────────────────────────────────────────────────────────"
+echo "$logs"
+pause
+}
+instructions(){
+clear
+echo "	██╗███╗░░██╗░██████╗████████╗██████╗░██╗░░░██╗░█████╗░████████╗██╗░█████╗░███╗░░██╗░██████╗"
+echo "	██║████╗░██║██╔════╝╚══██╔══╝██╔══██╗██║░░░██║██╔══██╗╚══██╔══╝██║██╔══██╗████╗░██║██╔════╝"
+echo "	██║██╔██╗██║╚█████╗░░░░██║░░░██████╔╝██║░░░██║██║░░╚═╝░░░██║░░░██║██║░░██║██╔██╗██║╚█████╗░"
+echo "	██║██║╚████║░╚═══██╗░░░██║░░░██╔══██╗██║░░░██║██║░░██╗░░░██║░░░██║██║░░██║██║╚████║░╚═══██╗"
+echo "	██║██║░╚███║██████╔╝░░░██║░░░██║░░██║╚██████╔╝╚█████╔╝░░░██║░░░██║╚█████╔╝██║░╚███║██████╔╝"
+echo "	╚═╝╚═╝░░╚══╝╚═════╝░░░░╚═╝░░░╚═╝░░╚═╝░╚═════╝░░╚════╝░░░░╚═╝░░░╚═╝░╚════╝░╚═╝░░╚══╝╚═════╝░"
+echo ""
+echo ""
+echo "Select an option to run it."
+echo "Try not to run an option multiple times. If you need to see the output of previous commands, check the ubuntoollog file, or run the \"View Logs\" option."
+pause
+}
+sudofix(){
+cat /etc/sudoers | grep NOPASSWD.* >> /dev/null
+	if [ $? -eq 0 ]
+	then
+		echo "NOPASSWD FOUND. GO CHANGE IT."
+		echo "NOPASSWD FOUND. GO CHANGE IT." >> ubuntoollog
+	fi
+cat /etc/sudoers | grep !authenticate >> /dev/null
+	if [ $? -eq 0 ]
+	then
+		echo "!authenticate found. GO CHANGE IT."
+		echo "!authenticate found. GO CHANGE IT." >> ubuntoollog
+
+	fi
+pause
+}
+
+exitscript(){
+	clear
+	exit 0
+}
+UserName=$(whoami)
+pause(){
+	read -p "Press [Enter] to continue..."
+}
+update(){
+clear
+		echo "Updating..."
+		apt update
+		apt upgrade
+		apt install unattended-upgrades apt-listchanges bsd-mailx
+		dpkg-reconfigure -plow unattended-upgrades
+		apt purge firefox
+		apt install firefox
+		
+pause
+}
+usrConfig(){
+# Prompt the user for a list of admin users
+echo "Enter a space-separated list of admin users:"
+read -a admin_users
+
+# Prompt the user for a list of standard users
+echo "Enter a space-separated list of standard users:"
+read -a standard_users
+
+# Get a list of all users on the system
+all_users=$(cat /etc/passwd | cut -d ":" -f 1)
+
+# Store the list of users that will be modified in an array
+users_to_modify=()
+echo "The following users will be modified:"
+# Loop through the list of all users
+for user in $all_users; do
+  # Get the UID of the current user
+  uid=$(id -u "$user")
+
+  # Check if the UID is between 0 and 999(to skip things like root or daemons)
+  if [ $uid -ge 0 ] && [ $uid -le 999 ]; then
+    # Skip this user
+    continue
+  fi
+  # Check if the current user is in the list of admin users or standard users
+  if [[ " ${admin_users[@]} " =~ " ${user} " ]] || [[ " ${standard_users[@]} " =~ " ${user} " ]]; then
+    # Add the user to the list of users to modify
+    users_to_modify+=($user)
+    echo "-$user"
+  fi
+done
+
+# Prompt the user for confirmation
+read -p "Are you sure you want to continue? (y/n) " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+  # The user did not confirm, so exit the script
+  return
+fi
+
+# Loop through the list of users to modify
+for user in "${users_to_modify[@]}"; do
+  # Check if the current user is in the list of admin users
+  if [[ " ${admin_users[@]} " =~ " ${user} " ]]; then
+    # Add the user to the sudo group and remove them from the admin group
+    usermod -aG sudo "$user"
+    usermod -aG adm "$user"
+    echo "$user set to admin" >> ubuntoollog
+  fi
+  
+  # Check if the user is in the list of standard users
+  if [[ " ${standard_users[@]} " =~ " ${user} " ]]; then
+    # Remove the user from the sudo and admin groups
+    gpasswd -d "$user" sudo
+    gpasswd -d "$user" adm
+    echo "$user set to standard" >> ubuntoollog
+  fi
+done
+# Store the list of users that will be deleted in an array
+users_to_delete=()
+
+# Loop through the list of all users
+for user in $all_users; do
+  # Skip the user "nobody"
+  if [ "$user" == "nobody" ]; then
+    continue
+  fi
+
+  # Get the UID of the current user
+  uid=$(id -u "$user")
+
+  # Check if the UID is between 0 and 999
+  if [ $uid -ge 0 ] && [ $uid -le 999 ]; then
+    # Skip this user
+    continue
+  fi
+
+  # Check if the current user is not in the list of admin users or standard users
+  if [[ ! " ${admin_users[@]} " =~ " ${user} " ]] && [[ ! " ${standard_users[@]} " =~ " ${user} " ]]; then
+    # Add the user to the list of users to delete
+    users_to_delete+=($user)
+  fi
+done
+
+# Echo the list of users that will be deleted
+echo "The following users will be deleted:"
+for user in "${users_to_delete[@]}"; do
+  echo "- $user"
+done
+
+# Prompt the user for confirmation
+read -p "Are you sure you want to continue? (y/n) " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+  # The user did not confirm, so exit the script
+  return
+fi
+
+# Loop through the list of users to delete
+for user in "${users_to_delete[@]}"; do
+  # Delete the user
+  userdel -r "$user"
+  echo "$user deleted" >> ubuntoollog
+done
+pause
+}
+menu(){
+echo -e "${R} ███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████"
+echo -e "${G} █░░░░░░██░░░░░░█░░░░░░░░░░░░░░███░░░░░░██░░░░░░█░░░░░░██████████░░░░░░█░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░█████████"
+echo -e "${B} █░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░███░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░░░░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░█████████"
+echo -e "${R} █░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░███░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░██░░▄▀░░█░░░░░░▄▀░░░░░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░█████████"
+echo -e "${G} █░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░███░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░██░░▄▀░░█████░░▄▀░░█████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████"
+echo -e "${B} █░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░▄▀░░░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░██░░▄▀░░█████░░▄▀░░█████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████"
+echo -e "${R} █░░▄▀░░██░░▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░██░░▄▀░░█████░░▄▀░░█████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████"
+echo -e "${G} █░░▄▀░░██░░▄▀░░█░░▄▀░░░░░░░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░██░░▄▀░░█████░░▄▀░░█████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████"
+echo -e "${B} █░░▄▀░░██░░▄▀░░█░░▄▀░░████░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░░░░░▄▀░░█████░░▄▀░░█████░░▄▀░░██░░▄▀░░█░░▄▀░░██░░▄▀░░█░░▄▀░░█████████"
+echo -e "${R} █░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░██░░▄▀▄▀▄▀▄▀▄▀░░█████░░▄▀░░█████░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░▄▀░░█░░▄▀░░░░░░░░░░█"
+echo -e "${G} █░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀░░██░░░░░░░░░░▄▀░░█████░░▄▀░░█████░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█░░▄▀▄▀▄▀▄▀▄▀░░█"
+echo -e "${B} █░░░░░░░░░░░░░░█░░░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░██████████░░░░░░█████░░░░░░█████░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█░░░░░░░░░░░░░░█"
+echo -e "${R} ███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████"
+				echo ""
+				echo "Ubuntu cyberpatriot tool, Written by corbin parrish"
+				echo ""
+				echo "You are operating in $currentdirectory"
+				echo ""
+				echo "█▀█ █▀█ ▀█▀ █ █▀█ █▄░█ █▀"
+				echo "█▄█ █▀▀ ░█░ █ █▄█ █░▀█ ▄█"
+				echo "[1] Update script dependencies    [2] View instructions"
+				echo "[3] Exit                          [4] View log file    "
+				echo "[5] Fix the sudoers file          [6] Make a user      "
+				echo "[7] List hidden users             [8] Delete media files "
+				echo "[9] Add critical services         [10] Delete and modify users"
+				echo "[11] Update system                [12] Reinstall a package"
+if [ "$UserName" != "root" ]
+then
+echo "It is required that you run this script as root."
+pause
+exitscript
+fi
+}
+
+
+
+
+
+read_options(){
+	read -p "> " choice
+		#these ar confusing. dont ask
+        	case  $choice in
+                	1) updatescript;;
+			10) usrConfig;;
+			11) update;;
+			3) exitscript;;
+			5) sudofix;;
+			2) instructions;;
+			4) viewlogs;;
+			6) makeusers;;
+			8) delmedia;;
+			7) hiddenusers;;
+			9) critservices;;
+			12) reinstall;;
+        	esac
+
+}
+while true
+do
+	clear
+	menu
+	read_options
+done
