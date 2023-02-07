@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Check if directory exists, create it if it doesn't
+if [ ! -d "./ubuntool2/modules" ]; then
+  mkdir -p ./ubuntool2/modules
+fi
+
+# Read input script line by line
+while read line; do
+  # Check if line starts with function name followed by an opening parenthesis
+  if [[ "$line" =~ ^[a-zA-Z_]+\(.* ]]; then
+    # Extract function name
+    func_name=$(echo "$line" | awk -F'(' '{print $1}')
+    # Write function to file in directory
+    echo "$line" | sed 's/^[a-zA-Z_]*(\(.*\))/\1/' >> ./ubuntool2/modules/$func_name.sh
+  else
+    # If line is a closing brace, don't write to file
+    if [[ "$line" != "}" ]]; then
+      # If line does not match function definition, append to existing function file
+      echo "$line" >> ./ubuntool2/modules/$func_name.sh
+    fi
+  fi
+done < "$1"
