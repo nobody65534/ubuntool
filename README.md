@@ -13,6 +13,3 @@ Module info:
 	Dissasembler also doesnt replace returns with exits.
 	(Working on these two)
 	
-Important note:
-	This isnt just for cyberpatriot, it primarily is but you can use it for other things.
-	ex. collection of games
