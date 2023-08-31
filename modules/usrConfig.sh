@@ -3,7 +3,7 @@ echo "Enter a space-separated list of admin users:"
 read -a admin_users
 
 # Prompt the user for a list of standard users
-echo "Enter a space-separated list of standard users:"
+echo 'Enter a space-separated list of standard users:'
 read -a standard_users
 
 # Get a list of all users on the system
