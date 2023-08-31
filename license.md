@@ -1,0 +1,1 @@
+Only licensed users (Tristan Dane Garrison and Corbin Parrish) may use this code or execute this program. Everyone is permitted to suggest code changes, and request permission to use this code/execute this program.
