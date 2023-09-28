@@ -1,7 +1,7 @@
 mp3finds=()
 mp4finds=()
-mp3finds=$(locate "*.mp3*")
-mp4finds=$(locate "*.mp4*")
+mp3finds=$(find -f -name "*.mp3*")
+mp4finds=$(find -f -name "*.mp4*")
 echo "These prohibited files are on your system:"
 echo "$mp3finds"
 echo "$mp4finds"
