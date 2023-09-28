@@ -17,4 +17,15 @@ y) rm "$mp3find";;
 n)
 esac
 done
+for mp4find in $mp4finds
+do
+clear
+echo "Do you want to remove this one?"
+echo "$mp4find"
+read -p "> " yn
+case $yn in
+y) rm "$mp4find";;
+n)
+esac
+done
 read -p "Press [ENTER] key to continue" fakeenter
