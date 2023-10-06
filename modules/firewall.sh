@@ -3,8 +3,8 @@ dpkg -l | grep ufw >> firewall.log
 		then
 			apt-get install ufw >> output.log
 		fi
-sudo ufw enable >>output.log
-sudo ufw status >> output.log
+sudo ufw enable >> firewall.log
+sudo ufw status >> firewall.log
 sleep 1
 ufw status
 read -p "Press [ENTER] key to continue"
