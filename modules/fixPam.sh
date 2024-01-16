@@ -48,6 +48,28 @@ service nginx restart || rollback_changes
 rm /etc/pam.conf.bak
 rm -r /etc/pam.d.bak
 
+# PAM Things for /etc/pam.d/login
+echo 'auth     requisite  pam_securetty.so' | sudo tee -a /etc/pam.d/login
+echo 'session  required   pam_limits.so' | sudo tee -a /etc/pam.d/login
+
+# Control of su in PAM (/etc/pam.d/su)
+echo 'auth     requisite   pam_wheel.so group=wheel debug' | sudo tee -a /etc/pam.d/su
+
+# Configuration for undefined PAM applications
+echo 'auth     required       pam_securetty.so' >> /etc/pam.d/other
+echo 'auth     required       pam_unix_auth.so' >> /etc/pam.d/other
+echo 'auth     required       pam_warn.so' >> /etc/pam.d/other
+echo 'auth     required       pam_deny.so' >> /etc/pam.d/other
+echo 'account  required       pam_unix_acct.so' >> /etc/pam.d/other
+echo 'account  required       pam_warn.so' >> /etc/pam.d/other
+echo 'account  required       pam_deny.so' >> /etc/pam.d/other
+echo 'password required       pam_unix_passwd.so' >> /etc/pam.d/other
+echo 'password required       pam_warn.so' >> /etc/pam.d/other
+echo 'password required       pam_deny.so' >> /etc/pam.d/other
+echo 'session  required       pam_unix_session.so' >> /etc/pam.d/other
+echo 'session  required       pam_warn.so' >> /etc/pam.d/other
+echo 'session  required       pam_deny.so' >> /etc/pam.d/other
+
 # Successful completion
 echo "PAM has been updated successfully."
 exit 0
