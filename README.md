@@ -1,8 +1,7 @@
 Ubuntool is a tool for ubuntu, primarily the cyberpatriot program.
 Dissasembler lets you dissasmle your own script's functions and add them to ubuntool modules. doesn't always work.
 Run with sudo 99% of the time.
-You can use ubuntool and dissambler but you cannot use modules unless the creator has given you permission. (I give you permission for the files listed under modules,
-I have a private branch with all the really advanced stuff)
+
 
 Module info:
 	Dont put readmes on your modules in the modules section. make a directory and put the readmes there.
