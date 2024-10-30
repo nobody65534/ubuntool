@@ -1,5 +1,5 @@
 #!/bin/bash
-readarray -t badpcks < badpackages.txt # Put each line of the file into badpcks
+readarray -t badpcks < ./db/badpackages.txt # Put each line of the file into badpcks
 for pck in "${badpcks[@]}"; do
     printf "Looking for %-30s" "$pck" 
     on_sys=$(dpkg -l | grep -ic "^ii.*$pck")
