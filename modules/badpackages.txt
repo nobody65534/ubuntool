@@ -1,0 +1,9 @@
+netcat
+samba-libs:i386
+nmap
+john
+apache
+burp
+wireshark
+metasploit
+squid
