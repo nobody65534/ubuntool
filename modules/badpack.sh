@@ -8,8 +8,7 @@ for pck in "${badpcks[@]}"; do
         echo -n "Found package $pck" >> ./log/packlog
         read conf1
         case "$conf1" in
-            [Yy]* ) sudo apt purge -y "$pck"
-            echo ": REMOVED" >> ./log/packlog ;;
+            [Yy]* ) sudo apt purge -y "$pck"; echo ": REMOVED" >> ./log/packlog ;;
             [Nn]* ) echo ": KEPT" >> ./log/packlog;;
             * ) echo "Please enter Y or N."; exit 1;;
         esac
