@@ -5,10 +5,12 @@ for pck in "${badpcks[@]}"; do
     on_sys=$(dpkg -l | grep -ic "^ii.*$pck")
     if [ "$on_sys" -gt 0 ]; then
         printf " Found\nWould you like to remove $pck [Y/N]\n> "
+        echo -n "Found package $pck" >> ./log/packlog
         read conf1
         case "$conf1" in
-            [Yy]* ) sudo apt purge -y "$pck";;
-            [Nn]* ) ;;
+            [Yy]* ) sudo apt purge -y "$pck"
+            echo ": REMOVED" >> ./log/packlog ;;
+            [Nn]* ) echo ": KEPT" >> ./log/packlog;;
             * ) echo "Please enter Y or N."; exit 1;;
         esac
     else
